@@ -29,21 +29,42 @@ int main(void) {
     //Setup UART
     uart_config();
     
+    // define the counter for the elements received
+    int counter = 0
     while (1) {
+        // Adjust the line below to: is there something in the variable received_bytes_buffer
         if (U2STABITS.URXDA == 1)
+        // Process received bytes
         {
-            // Check if received character equals CR or LF
-            // if ( U2RXREG ==  )
-            // {
-                // put character to SPI--
-                // spi_put_char(U2RXREG);
-                //Refine the above sending to spi, s.t. restart writing from beginning when line is full
-            // else
+            // iterate over buffer
+            //for (...)
             //{
-            //  SPI clear first row
+                       // Increase counter
+                      //  counter = counter + 1;
+            
+                            // Check if received character equals CR or LF
+                      // if ( U2RXREG (/item) == CR,LF  )
+                      // {
+                          // put character to SPI--
+                          // spi_put_char(U2RXREG);
+                          //Refine the above sending to spi, s.t. restart writing from beginning when line is full
+                      // else
+                      //{
+                      //  SPI clear first row
+                      //}
+                      //
             //}
             
+            
 
+            
+            //Button 5 pressed? Use interrupt version! Video Interrupt exercises: 8:00 ...
+            
+                //Send counter number to UART
+            
+            //Button 6 pressed?
+            
+            //Clear first row
             
             
         }
