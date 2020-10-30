@@ -9,6 +9,7 @@
 #include "xc.h"
 #include <stdio.h>
 #include "timer.h"
+#include "button.h"
 
 void uart_config(int uartNumber, int baudRate)
 {
@@ -31,20 +32,22 @@ int main(void) {
 
     // Setup timer for main loop, I define loop frequency of 100 Hz (10 ms)
     tmr_setup_period(TIMER2, 10);
-//Wait for display to come up, use timer function from second assignment 
-// TODO include time functions!
-//    tmr_wait_ms(TIMER1, 1000)
-    
-//Setup SPI
-// TODO include SPI part
-// spi_config()
     
     //Setup UART
     uart_config(1, 9600);
     uart_config(2, 9600);
     
+    //Setup Button S5
+    setupButtonS5();
     
+    //Wait for display to come up, use timer function from second assignment 
+    //TODO include time functions!
+    //    tmr_wait_ms(TIMER1, 1000)
     
+    //Setup SPI
+    // TODO include SPI part
+    // spi_config()
+
     // define the counter for the elements received
     unsigned int counter = 0;
     char c;
@@ -72,32 +75,30 @@ int main(void) {
                       //  SPI clear first row
                       //}
                       //
-            //}
-            
-            
+            //}  
+        }  // End of read from UART
+        
+         //Button 5 pressed?
+         if ( wasButtonS5Pressed() )
+        {
+            // Convert counter number to string
+            char counterStr[10] = "";
+            sprintf(counterStr, "%u", counter);
 
-            
-            //Button 5 pressed? Use interrupt version! Video Interrupt exercises: 8:00 ...
-            //if (buttonPressed == 1) <- This variable will be set by the ICR
+            // iterate over the characters of the string and send all of them
+            int i = 0;
+            while(counterStr[i] != '\0')
+            {
                 //Send counter number to UART
-                      // Convert counter number to string
-                      
-                        char counterStr[10] = "";
-                        sprintf(counterStr, "%u", counter);
-                      
-                        int i = 0;
-                        while(counterStr[i] != '\0')
-                        {
-                            U2TXREG = counterStr[i];
-                            i=i+1;
-                        }
-            //Button 6 pressed?
-            
-            //Clear first row
-            
-            
+                U2TXREG = counterStr[i];
+                i=i+1;
+            }
         }
+        //Button 6 pressed?
+
+        //Clear first row
+        
         tmr_wait_period(TIMER1);
-    }
+    }   // end of main loop
 
 }
