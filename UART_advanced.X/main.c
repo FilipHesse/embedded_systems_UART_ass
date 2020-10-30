@@ -42,12 +42,13 @@ int main(void) {
     
     // define the counter for the elements received
     int counter = 0;
+    char c;
     while (1) {
         // Adjust the line below to: is there something in the variable received_bytes_buffer
         if (U1STAbits.URXDA == 1)
         // Process received bytes
         {
-            char c = U1RXREG;
+            c = U1RXREG;
             
             // iterate over buffer
             //for (...)
@@ -74,7 +75,7 @@ int main(void) {
             //Button 5 pressed? Use interrupt version! Video Interrupt exercises: 8:00 ...
             //if (buttonPressed == 1) <- This variable will be set by the ICR
                 //Send counter number to UART
-                U2RXREG = c;
+                U2TXREG = counter;
             //Button 6 pressed?
             
             //Clear first row
