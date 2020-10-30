@@ -10,23 +10,8 @@
 #include <stdio.h>
 #include "timer.h"
 #include "button.h"
+#include "uart.h"
 
-void uart_config(int uartNumber, int baudRate)
-{
-    if (uartNumber == 1)
-    {
-        U1BRG = (7372800 / 4) / (16 * baudRate) - 1;
-        U1MODEbits.UARTEN = 1;
-        U1STAbits.UTXEN = 1;
-    }
-    
-    if (uartNumber == 2)
-    {
-        U2BRG = (7372800 / 4) / (16 * baudRate) - 1;
-        U2MODEbits.UARTEN = 1;
-        U2STAbits.UTXEN = 1;
-    }
-}
 
 int main(void) {
 
@@ -51,6 +36,7 @@ int main(void) {
     // define the counter for the elements received
     unsigned int counter = 0;
     char c;
+    
     while (1) {
         // Adjust the line below to: is there something in the variable received_bytes_buffer
         if (U1STAbits.URXDA == 1)
