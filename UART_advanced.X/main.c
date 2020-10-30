@@ -8,6 +8,7 @@
 
 #include "xc.h"
 #include <stdio.h>
+#include "timer.h"
 
 void uart_config(int uartNumber, int baudRate)
 {
@@ -28,6 +29,8 @@ void uart_config(int uartNumber, int baudRate)
 
 int main(void) {
 
+    // Setup timer for main loop, I define loop frequency of 100 Hz (10 ms)
+    tmr_setup_period(TIMER2, 10);
 //Wait for display to come up, use timer function from second assignment 
 // TODO include time functions!
 //    tmr_wait_ms(TIMER1, 1000)
@@ -40,8 +43,10 @@ int main(void) {
     uart_config(1, 9600);
     uart_config(2, 9600);
     
+    
+    
     // define the counter for the elements received
-    int counter = 0;
+    unsigned int counter = 0;
     char c;
     while (1) {
         // Adjust the line below to: is there something in the variable received_bytes_buffer
@@ -75,13 +80,24 @@ int main(void) {
             //Button 5 pressed? Use interrupt version! Video Interrupt exercises: 8:00 ...
             //if (buttonPressed == 1) <- This variable will be set by the ICR
                 //Send counter number to UART
-                U2TXREG = counter;
+                      // Convert counter number to string
+                      
+                        char counterStr[10] = "";
+                        sprintf(counterStr, "%u", counter);
+                      
+                        int i = 0;
+                        while(counterStr[i] != '\0')
+                        {
+                            U2TXREG = counterStr[i];
+                            i=i+1;
+                        }
             //Button 6 pressed?
             
             //Clear first row
             
             
         }
+        tmr_wait_period(TIMER1);
     }
 
 }
