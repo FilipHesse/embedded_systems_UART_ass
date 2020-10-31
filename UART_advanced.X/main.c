@@ -66,8 +66,12 @@ int main(void) {
              uart2TransmitIntAsStr(counter);
         }
         //Button 6 pressed?
-
-        //Clear first row
+	if ( wasButtonS6Pressed() )
+        {
+	     //Clear first row
+             uart2TransmitIntAsStr(counter);
+        }
+        
         
         tmr_wait_period(TIMER1);
     }   // end of main loop

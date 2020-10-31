@@ -14,5 +14,8 @@
 void setupButtonS5();
 bool wasButtonS5Pressed();
 
+void setupButtonS6();
+bool wasButtonS6Pressed();
+
 #endif	/* XC_HEADER_TEMPLATE_H */
 

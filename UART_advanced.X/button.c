@@ -26,6 +26,14 @@ void __attribute__((__interrupt__, __auto_psv__)) _INT0Interrupt(){
     IEC0bits.T3IE = 1;      //Enable timer 3 interrupt  
 }
 
+// Interrupt for the S6 button
+void __attribute__((__interrupt__, __auto_psv__)) _INT0Interrupt(){
+	// reset interrupt glag
+	IFSObits.INT1IF = 0;
+	// set flag, that button has been pressed
+	buttonS6Pressed = true;
+}
+
 //Interrupt Service Routine for timer
 void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(){
     
@@ -40,6 +48,7 @@ void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(){
 
 }
 
+// Function to setup the button S5
 void setupButtonS5()
 {
     // Button S5 is connected to Pin E8,which is shared with INT0,
@@ -48,6 +57,14 @@ void setupButtonS5()
     buttonS5Pressed = false;    //Initialize flag to 0
 }
 
+// Function to setup the button S6
+void setupButtonS6()
+{
+    // Button S6 is connected to Pin RD0_2,which is shared with INT1,
+    // which we will use to raise interrupts
+    IEC0bits.INT1IE = 1;        //Enable interrupt
+    buttonS6Pressed = false;    //Initialize flag to 0
+}
 
 // Automatically resets the buttonPressed flag to false, if it was true
 bool wasButtonS5Pressed()
@@ -55,6 +72,20 @@ bool wasButtonS5Pressed()
     if ( buttonS5Pressed )
     {
         buttonS5Pressed = false;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// Automatically resets the buttonPressed flag to false, if it was true
+bool wasButtonS6Pressed()
+{
+    if ( buttonS6Pressed )
+    {
+        buttonS6Pressed = false;
         return true;
     }
     else
