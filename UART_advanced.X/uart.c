@@ -8,20 +8,18 @@
 #include "uart.h"
 
 #define QUEUE_SIZE 32
-#include "ringbuffer.h"
 
-queue_t input_queue;
+
+//Ring buffer, that contains all the data which has been read
+ring_buffer_t uart_ring_buffer;
 
 //Interrupt Service Routine for Receiving from UART1
 void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(){
     // reset interrupt flag
     IFS0bits.U1RXIF = 0;
     
-    //read char
-    char c = U1RXREG;
-    
-    // push char into FIFO queue
-    queue_write(&input_queue, (void*)(c));
+    // push char into ringbuffer
+    ring_buffer_queue(&uart_ring_buffer, U1RXREG);
 }
 
 
@@ -29,7 +27,7 @@ void uart_config(int uartNumber, int baudRate)
 {
     if (uartNumber == 1)
     {
-        input_queue = {0, 0, QUEUE_SIZE, malloc(sizeof(void*) * QUEUE_SIZE)};
+        ring_buffer_init(&uart_ring_buffer); //Initialize ring buffer, size: 128 Bytes (defined in rungbuffer.h)
         
         U1BRG = (7372800 / 4) / (16 * baudRate) - 1;
         U1MODEbits.UARTEN = 1;  //Enable UART1
@@ -49,7 +47,24 @@ void uart_config(int uartNumber, int baudRate)
     }
 }
 
-void* uart1_read_value()
+// Getter function for ring buffer struct
+ring_buffer_t* getUARTRingBuffer()
 {
-    return queue_read(&input_queue);
+    return &uart_ring_buffer;
+}
+
+void uart2TransmitIntAsStr(int intToSend)
+{
+    // Convert counter number to string
+    char counterStr[10] = "";
+    sprintf(counterStr, "%u", intToSend);
+
+    // iterate over the characters of the string and send all of them
+    int i = 0;
+    while(counterStr[i] != '\0')
+    {
+        //Send counter number to UART
+        U2TXREG = counterStr[i];
+        i=i+1;
+    }
 }

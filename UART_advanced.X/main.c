@@ -13,6 +13,7 @@
 #include "uart.h"
 
 
+
 int main(void) {
 
     // Setup timer for main loop, I define loop frequency of 100 Hz (10 ms)
@@ -35,50 +36,34 @@ int main(void) {
 
     // define the counter for the elements received
     unsigned int counter = 0;
-    char c;
+    char c; // Character from UART
     
+    // Main loop
     while (1) {
-        // Adjust the line below to: is there something in the variable received_bytes_buffer
-        if (U1STAbits.URXDA == 1)
-        // Process received bytes
-        {
-            c = U1RXREG;
-            
-            // iterate over buffer
-            //for (...)
-            //{
-                       // Increase counter
-                      counter = counter + 1;
-            
-                            // Check if received character equals CR or LF
-                      // if ( U2RXREG (/item) == CR,LF  )
-                      // {
-                          // put character to SPI--
-                          // spi_put_char(U2RXREG);
-                          //Refine the above sending to spi, s.t. restart writing from beginning when line is full
-                      // else
-                      //{
-                      //  SPI clear first row
-                      //}
-                      //
-            //}  
+        // Read all the bytes, that have been stored to a ring buffer by the UART
+        // Interrupt service routine into the variable c
+        while ( ring_buffer_dequeue(getUARTRingBuffer(), &c) > 0){
+            // Increase counter
+           counter = counter + 1;
+
+           // Check if received character equals CR or LF
+           // if ( U2RXREG (/item) == CR,LF  )
+           // {
+               // put character to SPI--
+               // spi_put_char(U2RXREG);
+               //Refine the above sending to spi, s.t. restart writing from beginning when line is full
+           // else
+           //{
+           //  SPI clear first row
+           //}
+           //
+        //}  
         }  // End of read from UART
         
          //Button 5 pressed?
          if ( wasButtonS5Pressed() )
         {
-            // Convert counter number to string
-            char counterStr[10] = "";
-            sprintf(counterStr, "%u", counter);
-
-            // iterate over the characters of the string and send all of them
-            int i = 0;
-            while(counterStr[i] != '\0')
-            {
-                //Send counter number to UART
-                U2TXREG = counterStr[i];
-                i=i+1;
-            }
+             uart2TransmitIntAsStr(counter);
         }
         //Button 6 pressed?
 

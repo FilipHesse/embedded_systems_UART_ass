@@ -4,7 +4,11 @@
 #ifndef UART_H
 #define	UART_H
 
+#include "ringbuffer.h"
+
 void uart_config(int uartNumber, int baudRate);
+ring_buffer_t* getUARTRingBuffer();
+void uart2TransmitIntAsStr(int intToSend);
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 
