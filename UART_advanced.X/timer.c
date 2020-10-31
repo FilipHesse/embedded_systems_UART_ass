@@ -9,7 +9,7 @@
 #include "xc.h"
 
 #include "timer.h"
-
+// function to setup a period
 void tmr_setup_period(int timer, int ms){
     int tmr_setup_period(int timer, int ms){
     uint16_t sys_fy=18432; // system frequency
@@ -57,15 +57,34 @@ void tmr_wait_period(int timer){
     switch(timer){
         case 1:
             while(IFS0bits.T1IF != 1){
-                   
             }
             IFS0bits.T1IF = 0; // reset the expire flag to 0
             break;
         case 2:
             while(IFS0bits.T2IF != 1){
-                    
             }
             IFS0bits.T2IF = 0; // reset the expire flag to 0
+            break;
+    }
+}
+
+// function to implement a delay
+void tmr_wait_ms(int timer,int ms){
+    tmr_setup_period(timer,ms); //  Setup the timer for the desired time interval ms 
+    switch(timer){ // Cases for each timer
+        case 1:
+            T1CONbits.TON=1;// start the timer
+            while(IFS0bits.T2IF != 1){ // wait the period expiration
+            }
+            IFS0bits.T1IF = 0; // reset the flag to zero
+            T1CONbits.TON=0;//turn of the timer
+            break;
+        case 2:
+            T2CONbits.TON=1;// start the timer
+            while(IFS0bits.T2IF != 1){// wait the period expiration
+            }
+            IFS0bits.T2IF = 0;// reset the flag to zero
+            T2CONbits.TON=0;//turn of the timer
             break;
     }
 }

@@ -28,7 +28,7 @@ int main(void) {
     
     //Wait for display to come up, use timer function from second assignment 
     //TODO include time functions!
-    //    tmr_wait_ms(TIMER1, 1000)
+    tmr_wait_ms(TIMER1, 1000)
     
     //Setup SPI
     // TODO include SPI part
