@@ -47,10 +47,10 @@ int main(void) {
            counter = counter + 1;
 
            // Check if received character equals CR or LF
-           // if ( U2RXREG (/item) == CR,LF  )
+           // if ( c  == CR,LF  )
            // {
                // put character to SPI--
-               // spi_put_char(U2RXREG);
+               // spi_put_char(c);
                //Refine the above sending to spi, s.t. restart writing from beginning when line is full
            // else
            //{
