@@ -16,29 +16,34 @@ void spi_config(int mode,int prm, int sec){
 }
 
 //Function to write a string of certain length to the LCD
-void writeLCD(char *string,int length){
+void writeLCD(int row,char *string,int length){
     int i=0; // index less than the length of the string 
     int j=0; // index between 0 and 15
+	int position=0;
     char a; //character to be written
-    for(i=0;i<length;i++){ // for every character of the string 
-        if(i==16){ // overflow condition to write in the second row if text is too long
-            while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-            if(mode==1) // to switch between the two lines
-                SPI1BUF=0xC0; // second line
-            else
-                SPI1BUF=0x80; // first line
-	    while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-            SPI1BUF=string[i]; // write on the buffer
-            a=string[i]; // debug porpuse
-        }else if(string[i]=='\r' || string[i]=='\n'){ // If special character are written
+	if(row/100==1){
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-		SPI1BUF=0x01 // clear the LCD display
+		position=0x80+row%100;
+		SPI1BUF=position // write on the first line
+	}else{
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-		SPI1BUF=0x02 // restart from the first line
-	}else{ // If no condition are activated
-            while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-            SPI1BUF=string[i]; // write on the buffer
-            a=string[i]; // debug porpuse
-        }
+		position=0xC0+row%200;
+		SPI1BUF=0xC0 // write on the second line
+	}
+
+    if(length<16){
+
+	    for(i=0;i<length;i++){ // for every character of the string 
+		if(string[i]=='\r' || string[i]=='\n'){ // If special character are written
+			while(SPI1STATbits.SPITBF==1); // wait till buffer is available
+			SPI1BUF=0x01 // clear the LCD display
+			while(SPI1STATbits.SPITBF==1); // wait till buffer is available
+			SPI1BUF=0x02 // restart from the first line
+		}else{ // If no condition are activated
+				while(SPI1STATbits.SPITBF==1); // wait till buffer is available
+				SPI1BUF=string[i]; // write on the buffer
+				a=string[i]; // debug porpuse
+		}
+		
     }
 }

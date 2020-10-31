@@ -1,6 +1,6 @@
 /*
  * File:   main.c
- * Author: filip
+ * Author: filip,Matteo
  *
  * Created on October 30, 2020, 11:35 AM
  */
@@ -11,8 +11,10 @@
 #include "timer.h"
 #include "button.h"
 #include "uart.h"
+#include "spi.h"
 
-
+// define the counter for the elements received
+    unsigned int counter = 0;
 
 int main(void) {
 
@@ -32,11 +34,14 @@ int main(void) {
     
     //Setup SPI
     // TODO include SPI part
-    // spi_config()
+    spi_config(1,1,5)
 
-    // define the counter for the elements received
-    unsigned int counter = 0;
+    
     char c; // Character from UART
+	char string1[16]; // first row
+    char string2[16]; // second row
+    int length=0;
+ 	int position=0
     
     // Main loop
     while (1) {
@@ -45,35 +50,32 @@ int main(void) {
         while ( ring_buffer_dequeue(getUARTRingBuffer(), &c) > 0){
             // Increase counter
            counter = counter + 1;
-
-           // Check if received character equals CR or LF
-           // if ( c  == CR,LF  )
-           // {
-               // put character to SPI--
-               // spi_put_char(c);
-               //Refine the above sending to spi, s.t. restart writing from beginning when line is full
-           // else
-           //{
-           //  SPI clear first row
-           //}
-           //
-        //}  
+		   writeLCD(100+position,c,1);
+		   position++;
+		   if(c=='\n' || c=='\r' || position>16){
+				position=0;
+		   }
         }  // End of read from UART
-        
+	//Second row composition
+	//Compute the string and its length
+        length=sprintf(string,"Char Recv: %d\n",counter);
+	//write string to the LCD
+		writeLCD(200,string,length);
+
          //Button 5 pressed?
          if ( wasButtonS5Pressed() )
-        {
+         {
              uart2TransmitIntAsStr(counter);
-        }
+         }
         //Button 6 pressed?
-	if ( wasButtonS6Pressed() )
+		if ( wasButtonS6Pressed() )
         {
 	     //Clear first row
-             uart2TransmitIntAsStr(counter);
+             writeLCD('\r');
         }
         
         
-        tmr_wait_period(TIMER1);
+        tmr_wait_period(TIMER2);
     }   // end of main loop
 
 }

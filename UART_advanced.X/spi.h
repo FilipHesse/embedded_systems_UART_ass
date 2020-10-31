@@ -5,6 +5,6 @@
 // Funtion to configure the spi (LCD)
 void spi_config(int mode,int prm, int sec);
 // Function to write on the LCD
-void writeLCD(char *string,int length);
+void writeLCD(char character);
 
 #endif	/* XC_HEADER_TEMPLATE_H */

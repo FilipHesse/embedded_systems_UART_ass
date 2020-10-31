@@ -1,6 +1,6 @@
 /*
  * File:   button.c
- * Author: filip
+ * Author: filip,Matteo
  *
  * Created on October 30, 2020, 9:08 PM
  */
@@ -9,8 +9,10 @@
 #include "xc.h"
 #include "button.h"
 #include "timer.h"
+#include "spi.h"
 
 int buttonS5Pressed;
+int buttonS6Pressed;
 
 //Interrupt Service Routine for input flag
 void __attribute__((__interrupt__, __auto_psv__)) _INT0Interrupt(){
@@ -85,6 +87,7 @@ bool wasButtonS6Pressed()
 {
     if ( buttonS6Pressed )
     {
+	counter==0;
         buttonS6Pressed = false;
         return true;
     }
