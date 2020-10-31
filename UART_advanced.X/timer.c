@@ -1,6 +1,6 @@
 /*
  * File:   timer.c
- * Author: filip
+ * Author: filip,Matteo
  *
  * Created on October 30, 2020, 8:42 PM
  */
@@ -59,13 +59,13 @@ void tmr_wait_period(int timer){
             while(IFS0bits.T1IF != 1){
                    
             }
-            IFS0bits.T1IF = 0;
+            IFS0bits.T1IF = 0; // reset the expire flag to 0
             break;
         case 2:
             while(IFS0bits.T2IF != 1){
                     
             }
-            IFS0bits.T2IF = 0;
+            IFS0bits.T2IF = 0; // reset the expire flag to 0
             break;
     }
 }
