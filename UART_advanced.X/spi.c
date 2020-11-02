@@ -24,26 +24,28 @@ void writeLCD(int row,char *string,int length){
 	if(row/100==1){
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
 		position=0x80+row%100;
-		SPI1BUF=position // write on the first line
-	}else{
+		SPI1BUF=position; // write on the first line
+    }
+	else{
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
 		position=0xC0+row%200;
-		SPI1BUF=0xC0 // write on the second line
+		SPI1BUF=0xC0; // write on the second line
 	}
 
     if(length<16){
 
 	    for(i=0;i<length;i++){ // for every character of the string 
-		if(string[i]=='\r' || string[i]=='\n'){ // If special character are written
-			while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-			SPI1BUF=0x01 // clear the LCD display
-			while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-			SPI1BUF=0x02 // restart from the first line
-		}else{ // If no condition are activated
-				while(SPI1STATbits.SPITBF==1); // wait till buffer is available
+    		if(string[i]=='\r' || string[i]=='\n'){ // If special character are written
+        		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
+        		SPI1BUF=0x01; // clear the LCD display
+        		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
+        		SPI1BUF=0x02; // restart from the first line
+            }
+            else{ // If no condition are activated
+           		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
 				SPI1BUF=string[i]; // write on the buffer
 				a=string[i]; // debug porpuse
+            }
 		}
-		
     }
 }

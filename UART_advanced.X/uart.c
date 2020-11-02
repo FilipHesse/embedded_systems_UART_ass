@@ -6,7 +6,7 @@
  */
 #include "xc.h"
 #include "uart.h"
-
+#include <stdio.h>
 #define QUEUE_SIZE 32
 
 

@@ -29,11 +29,16 @@ void __attribute__((__interrupt__, __auto_psv__)) _INT0Interrupt(){
 }
 
 // Interrupt for the S6 button
-void __attribute__((__interrupt__, __auto_psv__)) _INT0Interrupt(){
-	// reset interrupt glag
-	IFSObits.INT1IF = 0;
+void __attribute__((__interrupt__, __auto_psv__)) _INT1Interrupt(){
+	// reset interrupt flag
+	IFS1bits.INT1IF = 0;
 	// set flag, that button has been pressed
 	buttonS6Pressed = true;
+    
+    tmr_setup_period(TIMER3,100);
+    IEC1bits.INT1IE = 0;    //Disable interrupt for timer period to avoid 
+                            //bouncing effects
+    IEC0bits.T3IE = 1;      //Enable timer 3 interrupt  
 }
 
 //Interrupt Service Routine for timer
@@ -45,9 +50,12 @@ void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(){
     IFS0bits.INT0IF = 0;    //Reset interrupt flag of INT0 AGAIN, because in the
                             //meantime, when the timer was running, the flag 
                             //could have been set to high again
-    IEC0bits.INT0IE = 1;    //Disable interrupt for timer period to avoid 
-                            //bouncing effects
+    IEC0bits.INT0IE = 1;    //Re-Enable Interrupt Int0
 
+    IFS1bits.INT1IF = 0;    //Reset interrupt flag of INT1 AGAIN, because in the
+                            //meantime, when the timer was running, the flag 
+                            //could have been set to high again
+    IEC1bits.INT1IE = 1;    //Re-Enable Interrupt Int1
 }
 
 // Function to setup the button S5
@@ -64,7 +72,7 @@ void setupButtonS6()
 {
     // Button S6 is connected to Pin RD0_2,which is shared with INT1,
     // which we will use to raise interrupts
-    IEC0bits.INT1IE = 1;        //Enable interrupt
+    IEC1bits.INT1IE = 1;        //Enable interrupt
     buttonS6Pressed = false;    //Initialize flag to 0
 }
 
@@ -87,7 +95,6 @@ bool wasButtonS6Pressed()
 {
     if ( buttonS6Pressed )
     {
-	counter==0;
         buttonS6Pressed = false;
         return true;
     }
