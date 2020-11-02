@@ -52,9 +52,9 @@ int main(void) {
            counter = counter + 1;
            
            //TODO 100 +position? why +100?
-		   writeLCD(100+position,&c,1);
+		   writeLCD(position,&c,1);
 		   position++;
-		   if(c=='\n' || c=='\r' || position>16){
+		   if(c=='\n' || c=='\r' || position>15){
 				position=0;
 		   }
         }  // End of read from UART
@@ -64,7 +64,7 @@ int main(void) {
         length=sprintf(string2,"Char Recv: %d\n",counter);
             
         //write string to the LCD
-		writeLCD(200,string2,length);
+		writeLCD(16,string2,length);
 
          //Button 5 pressed?
          if ( wasButtonS5Pressed() )
@@ -77,7 +77,7 @@ int main(void) {
 	     //Clear first row
             
           // TODO:Missing arguments   writeLCD('\r');
-            writeLCD('\r');
+            writeLCD(15,'\r',1);
         }
         
         

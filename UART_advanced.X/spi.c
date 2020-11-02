@@ -8,6 +8,11 @@
 #include "xc.h"
 //function to configure the SPI
 void spi_config(int mode,int prm, int sec){
+/* Parameters:
+	mode: which set the mode on Master(1) or Slave(0)
+	prm: primary prescaler
+	sec: secondary prescaler
+*/
     SPI1CONbits.MSTEN = 1; // master mode
     SPI1CONbits.MODE16 = mode; // 8 bit mode
     SPI1CONbits.PPRE = prm; // primary prescaler
@@ -17,22 +22,28 @@ void spi_config(int mode,int prm, int sec){
 
 //Function to write a string of certain length to the LCD
 void writeLCD(int row,char *string,int length){
+/* Parameters:
+	row:position from 0 to 31 in which [0 15] represent the first row indeces and [16 31] represent the second row indeces
+	string: represent the character array to be sent to the LCD
+	length: represent the length of the string array
+*/
     int i=0; // index less than the length of the string 
     int j=0; // index between 0 and 15
 	int position=0;
     char a; //character to be written
-	if(row/100==1){
+	if(row<16){ // first row indeces are less than 16
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-		position=0x80+row%100;
+		position=0x80+row;
 		SPI1BUF=position; // write on the first line
     }
-	else{
+	else{ // you are writing in the second row
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-		position=0xC0+row%200;
+		position=0xC0+row;
 		SPI1BUF=0xC0; // write on the second line
 	}
 
-    if(length<16){
+    // Write only if the length is less than the LCD width
+    if(row%16+length<16){
 
 	    for(i=0;i<length;i++){ // for every character of the string 
     		if(string[i]=='\r' || string[i]=='\n'){ // If special character are written
