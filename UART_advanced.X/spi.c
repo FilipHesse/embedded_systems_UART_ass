@@ -28,18 +28,14 @@ void writeLCD(int row,char *string,int length){
 	length: represent the length of the string array
 */
     int i=0; // index less than the length of the string 
-    int j=0; // index between 0 and 15
-	int position=0;
     char a; //character to be written
 	if(row<16){ // first row indeces are less than 16
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-		position=0x80+row;
-		SPI1BUF=position; // write on the first line
+		SPI1BUF=0x80+row; // write on the first line
     }
 	else{ // you are writing in the second row
 		while(SPI1STATbits.SPITBF==1); // wait till buffer is available
-		position=0xC0+row;
-		SPI1BUF=0xC0; // write on the second line
+		SPI1BUF=0xC0+row; // write on the second line
 	}
 
     // Write only if the length is less than the LCD width
@@ -60,3 +56,4 @@ void writeLCD(int row,char *string,int length){
 		}
     }
 }
+

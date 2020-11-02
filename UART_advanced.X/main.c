@@ -29,17 +29,14 @@ int main(void) {
     setupButtonS5();
     
     //Wait for display to come up, use timer function from second assignment 
-    //TODO include time functions!
     tmr_wait_ms(TIMER1, 1000);
     
     //Setup SPI
-    // TODO include SPI part
     spi_config(1,1,5);
 
     
     char c; // Character from UART
-	char string1[16]; // first row
-    char string2[16]; // second row
+    char string[16]; // second row
     int length=0;
  	int position=0;
     
@@ -50,8 +47,7 @@ int main(void) {
         while ( ring_buffer_dequeue(getUARTRingBuffer(), &c) > 0){
             // Increase counter
            counter = counter + 1;
-           
-           //TODO 100 +position? why +100?
+           	   // write the character in the appropriate position of the LCD
 		   writeLCD(position,&c,1);
 		   position++;
 		   if(c=='\n' || c=='\r' || position>15){
@@ -61,10 +57,10 @@ int main(void) {
         
         //Second row composition
         //Compute the string and its length
-        length=sprintf(string2,"Char Recv: %d\n",counter);
+        length=sprintf(string,"Char Recv: %d\n",counter);
             
         //write string to the LCD
-		writeLCD(16,string2,length);
+		writeLCD(16,string,length);
 
          //Button 5 pressed?
          if ( wasButtonS5Pressed() )
@@ -75,9 +71,11 @@ int main(void) {
 		if ( wasButtonS6Pressed() )
         {
 	     //Clear first row
-            
-          // TODO:Missing arguments   writeLCD('\r');
-            writeLCD(15,'\r',1);
+            writeLCD(15,"\r",1);
+	    //Second row composition
+            length=sprintf(string,"Char Recv: %d\n",counter);
+	    //write string to the LCD
+	    writeLCD(16,string,length);
         }
         
         
@@ -85,3 +83,4 @@ int main(void) {
     }   // end of main loop
 
 }
+
