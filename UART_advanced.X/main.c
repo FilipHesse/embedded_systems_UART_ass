@@ -47,8 +47,12 @@ int main(void) {
         while ( ring_buffer_dequeue(getUARTRingBuffer(), &c) > 0){
             // Increase counter
            counter = counter + 1;
+	   if(counter>9999){ // To avoid the overflow
+               counter=0;
+           }	
+		   length=sprintf(string,"%c",c);
            	   // write the character in the appropriate position of the LCD
-		   writeLCD(position,&c,1);
+		   writeLCD(position,c,1);
 		   position++;
 		   if(c=='\n' || c=='\r' || position>15){
 				position=0;
